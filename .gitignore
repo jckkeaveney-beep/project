@@ -1,0 +1,11 @@
+# Course data and things we download or generate (too big, or not ours to share)
+assignment2_data/
+transcripts/
+downloads_zenodo/
+index/
+student_download.py
+*.log
+
+# Python
+.venv/
+__pycache__/

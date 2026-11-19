@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Shot Search</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <section id="task">
+    <button id="show-task" type="button">Show current task</button>
+    <span id="task-summary"></span>
+    <div id="task-clues"></div>
+  </section>
+
+  <form id="text-search">
+    <input id="query" placeholder="Describe the shot, or type words someone says" required>
+    <select id="mode">
+      <option value="picture">What it looks like</option>
+      <option value="speech">What is said</option>
+      <option value="both">Both</option>
+    </select>
+    <label><input type="checkbox" id="varied"> At most 3 shots per video (for AVS)</label>
+    <button>Search</button>
+  </form>
+
+  <form id="image-search">
+    <input type="file" id="image" accept="image/*" required>
+    <button>Search with a screenshot (for KIS-V)</button>
+  </form>
+
+  <section id="player" hidden>
+    <video id="video" controls></video>
+    <p id="shot-label"></p>
+    <button id="submit">Submit this shot to DRES</button>
+    <p id="verdict"></p>
+  </section>
+
+  <div id="results"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+flask
+numpy
+open_clip_torch
+pillow
+requests
+torch
