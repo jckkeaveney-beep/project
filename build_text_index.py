@@ -55,7 +55,7 @@ def words_spoken_during(shot: Shot, segments: list[SpokenSegment]) -> str:
 
 
 def load_video_descriptions() -> dict[str, str]:
-    videos = json.loads(METADATA_FILE.read_text())
+    videos = json.loads(METADATA_FILE.read_text(encoding="utf-8"))
     return {
         video[VIDEO_ID_FIELD]: f"{video[TITLE_FIELD]} {video[TAGS_FIELD].replace(TAG_SEPARATOR, ' ')}"
         for video in videos

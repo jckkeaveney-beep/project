@@ -1,16 +1,67 @@
-body {
-  font-family: system-ui, sans-serif;
-  margin: 1rem;
+/* Keep the hidden attribute working on elements given display: flex below. */
+[hidden] {
+  display: none !important;
 }
 
-form {
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 34rem;
+  gap: 1rem;
+  height: 100vh;
+}
+
+main {
+  overflow-y: auto;
+  padding: 1rem 0 1rem 1rem;
+}
+
+aside {
+  overflow-y: auto;
+  padding: 1rem 1rem 1rem 0;
+}
+
+@media (max-width: 1000px) {
+  body {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+  aside {
+    padding: 0 1rem 1rem;
+  }
+}
+
+form,
+#selection-bar,
+.buttons {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.75rem;
 }
 
-#task {
+.hint {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+#query {
+  flex: 1 1 20rem;
+  font-size: 1rem;
+}
+
+#selection-bar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #fff3c4;
+  padding: 0.4rem;
+  border-radius: 6px;
+}
+
+section {
   border: 1px solid #ccc;
   border-radius: 6px;
   padding: 0.5rem;
@@ -24,20 +75,35 @@ form {
   display: block;
 }
 
-#query {
-  flex: 1 1 24rem;
-}
-
-#player {
-  position: sticky;
-  top: 0;
-  background: white;
-  padding-block: 0.5rem;
-}
-
 #video {
   width: 100%;
-  max-height: 50vh;
+  max-height: 45vh;
+  background: black;
+}
+
+#shot-label {
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+
+#verdict {
+  font-weight: bold;
+}
+
+#history h2 {
+  font-size: 1rem;
+  margin: 0 0 0.25rem;
+}
+
+#history-list {
+  font-size: 0.8rem;
+  font-family: ui-monospace, monospace;
+  padding-left: 1.5rem;
+  margin: 0;
+}
+
+#history-list li {
+  cursor: pointer;
 }
 
 #results {
@@ -46,7 +112,53 @@ form {
   gap: 4px;
 }
 
-#results img {
+.tile {
+  position: relative;
+  border: 3px solid transparent;
+}
+
+.tile img {
   width: 100%;
+  display: block;
   cursor: pointer;
+}
+
+.tile.selected {
+  border-color: #f0a000;
+}
+
+.tile.submitted {
+  border-color: #2a8a2a;
+}
+
+.tile .label {
+  position: absolute;
+  left: 2px;
+  bottom: 2px;
+  background: rgb(0 0 0 / 60%);
+  color: white;
+  font-size: 0.7rem;
+  padding: 0 3px;
+}
+
+.tile button {
+  position: absolute;
+  top: 2px;
+  opacity: 0;
+  padding: 0 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.tile button:nth-of-type(1) {
+  right: 30px;
+}
+
+.tile button:nth-of-type(2) {
+  right: 2px;
+}
+
+.tile:hover button,
+.tile.selected button:nth-of-type(2) {
+  opacity: 1;
 }

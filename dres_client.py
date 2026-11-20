@@ -28,8 +28,17 @@ class DresClient:
         self.server_url = server_url.rstrip("/")
         self.session_id = self._log_in(username, password)
 
-    def current_task(self) -> CurrentTask:
-        evaluation_id = self._active_evaluation_id()
+    def active_evaluations(self) -> list[dict]:
+        # Several runs can be active at once (e.g. one practice run per task type),
+        # so the operator picks one in the UI; we never guess.
+        evaluations = self._get("/api/v2/client/evaluation/list")
+        return [
+            {"id": evaluation["id"], "name": evaluation.get("name", evaluation["id"])}
+            for evaluation in evaluations
+            if evaluation.get("status") == "ACTIVE"
+        ]
+
+    def current_task(self, evaluation_id: str) -> CurrentTask:
         state = self._get(f"/api/v2/evaluation/{evaluation_id}/state")
         if state["taskStatus"] != RUNNING:
             return CurrentTask(status=state["taskStatus"])
@@ -45,16 +54,21 @@ class DresClient:
             clues=clues_shown_so_far(hint["sequence"], state["timeElapsed"]),
         )
 
-    def submit_segment(self, video_id: str, start_ms: int, end_ms: int) -> str:
+    def submit_segment(self, evaluation_id: str, video_id: str, start_ms: int, end_ms: int) -> str:
         answer = {"mediaItemName": video_id, "start": start_ms, "end": end_ms}
         response = requests.post(
-            f"{self.server_url}/api/v2/submit/{self._active_evaluation_id()}",
+            f"{self.server_url}/api/v2/submit/{evaluation_id}",
             params={"session": self.session_id},
             json={"answerSets": [{"answers": [answer]}]},
             timeout=REQUEST_TIMEOUT_SECONDS,
         )
-        result = response.json()
-        return result.get("submission") or result.get("description", "")
+        # 200 = judged, 202 = waiting for a human judge (AVS), 412 = rejected.
+        try:
+            result = response.json()
+        except ValueError:
+            return f"HTTP {response.status_code}: {response.text[:200]}"
+        verdict = result.get("submission") or result.get("description") or str(result)
+        return f"HTTP {response.status_code}: {verdict}"
 
     def _log_in(self, username: str, password: str) -> str:
         response = requests.post(
@@ -64,13 +78,6 @@ class DresClient:
         )
         response.raise_for_status()
         return response.json()["sessionId"]
-
-    def _active_evaluation_id(self) -> str:
-        evaluations = self._get("/api/v2/client/evaluation/list")
-        active = [evaluation for evaluation in evaluations if evaluation["status"] == "ACTIVE"]
-        if not active:
-            raise RuntimeError("DRES has no active evaluation yet. Wait for the task to start.")
-        return active[0]["id"]
 
     def _get(self, path: str):
         response = requests.get(

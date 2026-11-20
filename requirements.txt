@@ -2,5 +2,8 @@ flask
 numpy
 open_clip_torch
 pillow
+# Pinned to an older release: Windows Smart App Control blocks brand-new regex
+# DLLs (no reputation yet), which breaks open_clip's tokenizer on import.
+regex==2025.9.18
 requests
 torch

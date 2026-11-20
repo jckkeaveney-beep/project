@@ -5,6 +5,8 @@ downloads_zenodo/
 index/
 student_download.py
 *.log
+submissions.jsonl
+.env
 
 # Python
 .venv/

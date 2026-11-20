@@ -6,36 +6,60 @@
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <section id="task">
-    <button id="show-task" type="button">Show current task</button>
-    <span id="task-summary"></span>
-    <div id="task-clues"></div>
-  </section>
+  <main>
+    <form id="text-search">
+      <input id="query" placeholder="Describe the shot, or type words someone says" required autofocus>
+      <select id="mode">
+        <option value="picture">What it looks like</option>
+        <option value="speech">What is said / title</option>
+        <option value="both">Both</option>
+      </select>
+      <label><input type="checkbox" id="varied"> Max 3 per video (AVS)</label>
+      <button>Search</button>
+    </form>
 
-  <form id="text-search">
-    <input id="query" placeholder="Describe the shot, or type words someone says" required>
-    <select id="mode">
-      <option value="picture">What it looks like</option>
-      <option value="speech">What is said</option>
-      <option value="both">Both</option>
-    </select>
-    <label><input type="checkbox" id="varied"> At most 3 shots per video (for AVS)</label>
-    <button>Search</button>
-  </form>
+    <form id="image-search">
+      <input type="file" id="image" accept="image/*" required>
+      <button>Search with a screenshot</button>
+      <span class="hint">or paste one anywhere with Ctrl+V (KIS-V)</span>
+    </form>
 
-  <form id="image-search">
-    <input type="file" id="image" accept="image/*" required>
-    <button>Search with a screenshot (for KIS-V)</button>
-  </form>
+    <div id="selection-bar" hidden>
+      <span id="selection-count"></span>
+      <button id="submit-selected" type="button">Submit selected to DRES</button>
+      <button id="clear-selection" type="button">Clear</button>
+    </div>
 
-  <section id="player" hidden>
-    <video id="video" controls></video>
-    <p id="shot-label"></p>
-    <button id="submit">Submit this shot to DRES</button>
-    <p id="verdict"></p>
-  </section>
+    <p id="search-message"></p>
+    <div id="results"></div>
+  </main>
 
-  <div id="results"></div>
+  <aside>
+    <section id="task">
+      <button id="load-runs" type="button">Connect to DRES</button>
+      <select id="run-choice" hidden>
+        <option value="">Choose the DRES run to follow and submit to…</option>
+      </select>
+      <p id="task-summary"></p>
+      <div id="task-clues"></div>
+    </section>
+
+    <section id="player" hidden>
+      <video id="video" controls></video>
+      <p id="shot-label"></p>
+      <div class="buttons">
+        <button id="submit" type="button">Submit this shot</button>
+        <button id="similar-to-playing" type="button">More like this</button>
+        <button id="play-from-start" type="button">Replay shot</button>
+      </div>
+      <p id="verdict"></p>
+    </section>
+
+    <section id="history">
+      <h2>Submitted this session</h2>
+      <ol id="history-list"></ol>
+    </section>
+  </aside>
 
   <script src="/static/app.js"></script>
 </body>
